@@ -5,19 +5,20 @@ import 'package:task_manager/ui/screens/verify_otp_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
-class ForgotPasswordVerifyEmailScreen extends StatefulWidget {
-  const ForgotPasswordVerifyEmailScreen({super.key});
+class SetPasswordScreen extends StatefulWidget {
+  const SetPasswordScreen({super.key});
 
-  static const String name = '/forgot-password/verify-email';
+  static const String name = '/forgot-password/set-password';
 
   @override
-  State<ForgotPasswordVerifyEmailScreen> createState() =>
-      _ForgotPasswordVerifyEmailScreenState();
+  State<SetPasswordScreen> createState() =>
+      _SetPasswordScreenState();
 }
 
-class _ForgotPasswordVerifyEmailScreenState
-    extends State<ForgotPasswordVerifyEmailScreen> {
-  final TextEditingController _emailEDcontroller = TextEditingController();
+class _SetPasswordScreenState
+    extends State<SetPasswordScreen> {
+  final TextEditingController _passwordEDcontroller = TextEditingController();
+  final TextEditingController _confirmPasswordEDcontroller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   @override
@@ -35,26 +36,32 @@ class _ForgotPasswordVerifyEmailScreenState
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(height: 80),
-                Text("Your Email Address", style: textTheme.titleLarge),
+                Text("Set Password", style: textTheme.titleLarge),
                 const SizedBox(height: 4),
                 Text(
-                  "A 6 digits of OTP will be sent to your email address",
+                  "Minimum length of password should be more than 8 letter",
                   style: TextStyle(
                     color: Colors.black45,
                   ),
                 ),
                 const SizedBox(height: 24),
                 TextFormField(
-                  controller: _emailEDcontroller,
+                  controller: _passwordEDcontroller,
                   keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(hintText: "Email"),
+                  decoration: InputDecoration(hintText: "Password"),
                 ),
+                const SizedBox(height: 4,),
+                TextFormField(
+                  controller: _confirmPasswordEDcontroller,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: InputDecoration(hintText: "Confirm Password"),
+                ),
+
                 const SizedBox(height: 24),
                 ElevatedButton(
                     onPressed: () {
-
-                      Navigator.pushNamed(context, VerifyOTPscreen.name);
-                    },
+                      Navigator.pushNamed(
+                          context, SignInScreen.name);                    },
                     child: Icon(Icons.arrow_circle_right_outlined)),
                 const SizedBox(height: 48),
                 Center(
@@ -93,7 +100,8 @@ class _ForgotPasswordVerifyEmailScreenState
 
   @override
   void dispose() {
-    _emailEDcontroller.dispose();
+    _passwordEDcontroller.dispose();
+    _confirmPasswordEDcontroller.dispose();
     super.dispose();
   }
 }

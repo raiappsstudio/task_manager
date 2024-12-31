@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/screens/forgot_password_verify_email_screen.dart';
+import 'package:task_manager/ui/screens/set_password_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
 import 'package:task_manager/ui/screens/splash_screen.dart';
+import 'package:task_manager/ui/screens/verify_otp_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
 
 class TaskManagerApp extends StatelessWidget {
@@ -49,9 +51,6 @@ class TaskManagerApp extends StatelessWidget {
 
 
 
-
-
-
       initialRoute: '/',
       onGenerateRoute: (RouteSettings settings) {
         late Widget widget;
@@ -63,7 +62,14 @@ class TaskManagerApp extends StatelessWidget {
           widget = const SingUpScreen();
         }else if (settings.name == ForgotPasswordVerifyEmailScreen.name) {
           widget = const ForgotPasswordVerifyEmailScreen();
+        }else if (settings.name == VerifyOTPscreen.name) {
+          widget = const VerifyOTPscreen();
+        }else if (settings.name == SetPasswordScreen.name) {
+          widget = const SetPasswordScreen();
         }
+
+
+
 
 
         return MaterialPageRoute(builder: (_) => widget);
