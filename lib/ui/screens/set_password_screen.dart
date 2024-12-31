@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/ui/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/verify_otp_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
@@ -11,14 +12,13 @@ class SetPasswordScreen extends StatefulWidget {
   static const String name = '/forgot-password/set-password';
 
   @override
-  State<SetPasswordScreen> createState() =>
-      _SetPasswordScreenState();
+  State<SetPasswordScreen> createState() => _SetPasswordScreenState();
 }
 
-class _SetPasswordScreenState
-    extends State<SetPasswordScreen> {
+class _SetPasswordScreenState extends State<SetPasswordScreen> {
   final TextEditingController _passwordEDcontroller = TextEditingController();
-  final TextEditingController _confirmPasswordEDcontroller = TextEditingController();
+  final TextEditingController _confirmPasswordEDcontroller =
+      TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
 
   @override
@@ -50,19 +50,21 @@ class _SetPasswordScreenState
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(hintText: "Password"),
                 ),
-                const SizedBox(height: 4,),
+                const SizedBox(
+                  height: 4,
+                ),
                 TextFormField(
                   controller: _confirmPasswordEDcontroller,
                   keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(hintText: "Confirm Password"),
                 ),
-
                 const SizedBox(height: 24),
                 ElevatedButton(
                     onPressed: () {
-                      Navigator.pushNamed(
-                          context, SignInScreen.name);                    },
-                    child: Icon(Icons.arrow_circle_right_outlined)),
+                      Navigator.pushNamedAndRemoveUntil(
+                          context, MainBottomNavScreen.name, (value) => false);
+                    },
+                    child: Text('Confirm')),
                 const SizedBox(height: 48),
                 Center(
                   child: Column(
