@@ -6,13 +6,13 @@ class NetworkResponse {
   final int statusCode;
   final Map<String, dynamic>? responseData;
   final bool isSuccess;
-  final String? errorMessage;
+  final String errorMessage;
 
   NetworkResponse({
     required this.isSuccess,
     required this.statusCode,
     this.responseData,
-    this.errorMessage,
+    this.errorMessage = "Somthin went wrong",
   });
 }
 
