@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
+import 'package:task_manager/ui/widgets/snack_ber_messge.dart';
 
 class TaskItemWidget extends StatelessWidget {
   const TaskItemWidget({
     super.key,
+    required this.taskModel,
   });
+
+  final TaskModel taskModel;
 
   @override
   Widget build(BuildContext context) {
@@ -11,23 +18,23 @@ class TaskItemWidget extends StatelessWidget {
       color: Colors.white,
       elevation: 0,
       child: ListTile(
-        title: const Text('Title will be here'),
+        title: Text(taskModel.title ?? ''),
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text('Description will be here'),
-            const Text('Date: 12/12/2024'),
+            Text(taskModel.description ?? ''),
+            Text(taskModel.createdDate ?? ''),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
                       color: Colors.blue),
-                  child: const Text(
-                    'New',
+                  child: Text(
+                    taskModel.status ?? "",
                     style: TextStyle(
                       color: Colors.white,
                     ),
@@ -36,7 +43,10 @@ class TaskItemWidget extends StatelessWidget {
                 Row(
                   children: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        MyalerDialog(context);
+
+                      },
                       icon: const Icon(Icons.delete),
                     ),
                     IconButton(
@@ -51,5 +61,50 @@ class TaskItemWidget extends StatelessWidget {
         ),
       ),
     );
+
+
   }
+
+
+
+  Future<void> _deleteTask(context) async {
+    final NetworkResponse response = await NetworkCaller.getRequest(
+        url: Urls.deletedTaskUrl('${taskModel.sId}'));
+
+    if (response.isSuccess) {
+
+      showSnackBerMessage(context, 'Delete Successfully!');
+    } else {
+
+      showSnackBerMessage(context, 'Delete Fail!');
+
+    }
+  }
+
+
+
+  MyalerDialog(context) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Expanded(
+              child: AlertDialog(
+            title: Text('Delete!'),
+            content: Text("Are you want to Delete ${taskModel.title}?"),
+            actions: [
+              TextButton(
+                  onPressed: () {
+                    _deleteTask(context);
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('Yes')),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: Text('No'))
+            ],
+          ));
+        });
+  } //Alart dialog end here================
 }

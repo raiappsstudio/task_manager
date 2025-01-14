@@ -29,7 +29,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
 
     return Scaffold(
       appBar: TMAppBar(
-        fromUpadeProfile: true,
+        fromUpdateProfile: true,
       ),
       body: SingleChildScrollView(
         child: ScreenBackground(

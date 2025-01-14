@@ -4,5 +4,9 @@
 
   static const String registationUrl = '$_baseUrl/registration';
   static const String signInUrl = '$_baseUrl/login';
+  static const String createTaskUrl = '$_baseUrl/createTask';
+  static const String taskCountByStatusUrl = '$_baseUrl/taskStatusCount';
+  static String listTaskListUrl(String status) => '$_baseUrl/listTaskByStatus/$status';
+  static String deletedTaskUrl(String id) => '$_baseUrl/deleteTask/$id';
 
  }
