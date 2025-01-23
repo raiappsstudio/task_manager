@@ -5,6 +5,7 @@ import 'package:task_manager/ui/widgets/tm_app_bar.dart';
 import '../utils/app_colors.dart';
 import '../widgets/screen_background.dart';
 
+
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
 
@@ -13,6 +14,8 @@ class UpdateProfileScreen extends StatefulWidget {
   @override
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
 }
+bool updateInprogress = false;
+
 
 final TextEditingController _firstNameEDcontroller = TextEditingController();
 final TextEditingController _lastNameEDcontroller = TextEditingController();
@@ -20,6 +23,7 @@ final TextEditingController _mobileEDcontroller = TextEditingController();
 final TextEditingController _emailEDcontroller = TextEditingController();
 final TextEditingController _passwordEDcontroller = TextEditingController();
 final GlobalKey<FormState> _formKey = GlobalKey();
+XFile? _pickedImage;
 
 
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
@@ -139,6 +143,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                     ),
                   );
   }
+
+
+  Future <void> _pickImage() async{
+
+
+
+  }
+
+
+
+
 
   @override
   void dispose() {

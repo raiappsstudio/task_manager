@@ -32,7 +32,8 @@ class TaskItemWidget extends StatelessWidget {
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(16),
-                      color: Colors.blue),
+                      color: _getStatusColor(taskModel.status ?? "",),
+                  ),
                   child: Text(
                     taskModel.status ?? "",
                     style: TextStyle(
@@ -50,7 +51,9 @@ class TaskItemWidget extends StatelessWidget {
                       icon: const Icon(Icons.delete),
                     ),
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        UpdateStatus(context);
+                      },
                       icon: const Icon(Icons.edit),
                     ),
                   ],
@@ -106,5 +109,44 @@ class TaskItemWidget extends StatelessWidget {
             ],
           ));
         });
+  }
+
+
+
+
+  UpdateStatus(context) {
+
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Expanded(
+              child: AlertDialog(
+            title: Text('Change Status!'),
+
+
+
+          ));
+        });
+
+
+
   } //Alart dialog end here================
+
+
+  Color _getStatusColor(String status) {
+    if (status == 'New') {
+      return Colors.blue;
+    } else if (status == 'Progress') {
+      return Colors.deepOrangeAccent;
+    } else if (status == 'Cancel') {
+      return Colors.red;
+    } else {
+      return Colors.green;
+    }
+  }
+
+
+
+
+
 }
