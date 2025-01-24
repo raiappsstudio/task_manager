@@ -1,9 +1,14 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:task_manager/data/services/network_caller.dart';
+import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/verify_otp_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
+import 'package:task_manager/ui/widgets/center_circular_inprogress_ber.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:task_manager/ui/widgets/snack_ber_messge.dart';
+
 
 class ForgotPasswordVerifyEmailScreen extends StatefulWidget {
   const ForgotPasswordVerifyEmailScreen({super.key});
@@ -19,6 +24,7 @@ class _ForgotPasswordVerifyEmailScreenState
     extends State<ForgotPasswordVerifyEmailScreen> {
   final TextEditingController _emailEDcontroller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
+  bool inprogressbar = false;
 
   @override
   Widget build(BuildContext context) {
@@ -50,12 +56,15 @@ class _ForgotPasswordVerifyEmailScreenState
                   decoration: InputDecoration(hintText: "Email"),
                 ),
                 const SizedBox(height: 24),
-                ElevatedButton(
-                    onPressed: () {
-
-                      Navigator.pushNamed(context, VerifyOTPscreen.name);
-                    },
-                    child: Icon(Icons.arrow_circle_right_outlined)),
+                Visibility(
+                  visible: inprogressbar ==false,
+                  replacement: CenterCirculerInprogressBer(),
+                  child: ElevatedButton(
+                      onPressed: () {
+                        _getEmailAdress();
+                      },
+                      child: Icon(Icons.arrow_circle_right_outlined)),
+                ),
                 const SizedBox(height: 48),
                 Center(
                   child: Column(
@@ -90,6 +99,29 @@ class _ForgotPasswordVerifyEmailScreenState
       ),
     );
   }
+
+
+
+
+
+  Future<void> _getEmailAdress ()async{
+    final NetworkResponse response = await NetworkCaller.getRequest(
+        url: Urls.RecoverVerifyEmailUrl(_emailEDcontroller.text));
+
+
+    if (response.isSuccess){
+      Navigator.pushNamed(context, VerifyOTPscreen.name);
+    }else{
+
+      showSnackBerMessage(context, response.errorMessage);
+    }
+
+  }
+
+
+
+
+
 
   @override
   void dispose() {

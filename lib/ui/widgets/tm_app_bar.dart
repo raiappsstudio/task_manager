@@ -1,3 +1,4 @@
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
@@ -21,8 +22,12 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: AppColors.themeColor,
       title: Row(
         children: [
-          const CircleAvatar(
+          CircleAvatar(
             radius: 16,
+            backgroundImage: MemoryImage(
+              base64Decode(AuthController.userModel?.photo ?? ''),
+            ),
+            onBackgroundImageError: (_, __) => const Icon(Icons.person_outline),
           ),
           const SizedBox(width: 8),
           Expanded(
@@ -53,7 +58,9 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
               Navigator.pushNamedAndRemoveUntil(
                   context, SignInScreen.name, (predicate) => false);
             },
-            icon: const Icon(Icons.logout),
+            icon: Icon(Icons.logout,color: Colors.white,),
+
+
           )
         ],
       ),
