@@ -1,109 +1,108 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/ui/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
-import 'package:task_manager/ui/screens/verify_otp_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
-class SetPasswordScreen extends StatefulWidget {
-  const SetPasswordScreen({super.key});
+class ResetPasswordScreen extends StatefulWidget {
+  const ResetPasswordScreen({super.key});
 
-  static const String name = '/forgot-password/set-password';
+
+  static String name = "set-password";
 
   @override
-  State<SetPasswordScreen> createState() => _SetPasswordScreenState();
+  State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();
 }
 
-class _SetPasswordScreenState extends State<SetPasswordScreen> {
-  final TextEditingController _passwordEDcontroller = TextEditingController();
-  final TextEditingController _confirmPasswordEDcontroller =
-      TextEditingController();
-  final GlobalKey<FormState> _formKey = GlobalKey();
-
+class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
+    TextTheme textTheme = Theme.of(context).textTheme;
 
     return Scaffold(
-      body: SingleChildScrollView(
-        child: ScreenBackground(
-            child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
+      body: ScreenBackground(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(24),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 80),
-                Text("Set Password", style: textTheme.titleLarge),
-                const SizedBox(height: 4),
+                const SizedBox(height: 82),
                 Text(
-                  "Minimum length of password should be more than 8 letter",
-                  style: TextStyle(
-                    color: Colors.black45,
-                  ),
+                  'Set Password',
+                  style: textTheme.displaySmall
+                      ?.copyWith(fontWeight: FontWeight.w500),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Minimum number of password should be 8 letters',
+                  style: textTheme.titleSmall?.copyWith(color: Colors.grey),
                 ),
                 const SizedBox(height: 24),
-                TextFormField(
-                  controller: _passwordEDcontroller,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(hintText: "Password"),
-                ),
-                const SizedBox(
-                  height: 4,
-                ),
-                TextFormField(
-                  controller: _confirmPasswordEDcontroller,
-                  keyboardType: TextInputType.emailAddress,
-                  decoration: InputDecoration(hintText: "Confirm Password"),
-                ),
-                const SizedBox(height: 24),
-                ElevatedButton(
-                    onPressed: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                          context, MainBottomNavScreen.name, (value) => false);
-                    },
-                    child: Text('Confirm')),
+                _buildResetPasswordForm(),
                 const SizedBox(height: 48),
                 Center(
-                  child: Column(
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: "Don't have an account?",
-                          style: const TextStyle(
-                              color: Colors.black54,
-                              fontWeight: FontWeight.w600),
-                          children: [
-                            TextSpan(
-                              text: " Sign In",
-                              style:
-                                  const TextStyle(color: AppColors.themeColor),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context, SignInScreen.name);
-                                },
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                  child: _buildHaveAccountSection(),
                 )
               ],
             ),
           ),
-        )),
+        ),
       ),
     );
   }
 
-  @override
-  void dispose() {
-    _passwordEDcontroller.dispose();
-    _confirmPasswordEDcontroller.dispose();
-    super.dispose();
+  Widget _buildResetPasswordForm() {
+    return Column(
+      children: [
+        TextFormField(
+          decoration: const InputDecoration(hintText: 'Password'),
+        ),
+        const SizedBox(height: 8),
+        TextFormField(
+          decoration: const InputDecoration(hintText: 'Confirm Password'),
+        ),
+        const SizedBox(height: 24),
+        ElevatedButton(
+          onPressed: _onTapNextButton,
+          child: const Icon(Icons.arrow_circle_right_outlined),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildHaveAccountSection() {
+    return RichText(
+      text: TextSpan(
+        style: const TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+            letterSpacing: 0.5),
+        text: "Have account? ",
+        children: [
+          TextSpan(
+              text: 'Sign In',
+              style: const TextStyle(color: AppColors.themeColor),
+              recognizer: TapGestureRecognizer()..onTap = _onTapSignIn),
+        ],
+      ),
+    );
+  }
+
+  void _onTapNextButton() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
+          (_) => false,
+    );
+  }
+
+  void _onTapSignIn() {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => const SignInScreen()),
+          (_) => false,
+    );
   }
 }

@@ -88,7 +88,7 @@ class _SignInScreenState extends State<SignInScreen> {
                       TextButton(
                         onPressed: () {
                           Navigator.pushNamed(
-                              context, ForgotPasswordVerifyEmailScreen.name);
+                              context, ForgotPasswordEmailScreen.name);
                         },
                         child: const Text("Forgot Password"),
                       ),

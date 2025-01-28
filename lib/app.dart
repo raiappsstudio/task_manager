@@ -66,12 +66,12 @@ class TaskManagerApp extends StatelessWidget {
           widget = const SignInScreen();
         } else if (settings.name == SingUpScreen.name) {
           widget = const SingUpScreen();
-        } else if (settings.name == ForgotPasswordVerifyEmailScreen.name) {
-          widget = const ForgotPasswordVerifyEmailScreen();
+        } else if (settings.name == ForgotPasswordEmailScreen.name) {
+          widget = const ForgotPasswordEmailScreen();
         } else if (settings.name == VerifyOTPscreen.name) {
           widget = const VerifyOTPscreen();
-        } else if (settings.name == SetPasswordScreen.name) {
-          widget = const SetPasswordScreen();
+        } else if (settings.name == ResetPasswordScreen.name) {
+          widget = const ResetPasswordScreen();
         }else if (settings.name == MainBottomNavScreen.name) {
           widget = const MainBottomNavScreen();
         }else if (settings.name == NewTaskListScreen.name) {
@@ -87,6 +87,9 @@ class TaskManagerApp extends StatelessWidget {
         }else if (settings.name == UpdateProfileScreen.name) {
           widget = const UpdateProfileScreen();
         }
+
+
+
 
         return MaterialPageRoute(builder: (_) => widget);
       },
