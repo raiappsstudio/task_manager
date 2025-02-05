@@ -11,6 +11,7 @@
 
   static const String updateProfile = '$_baseUrl/profileUpdate';
   static String RecoverVerifyEmailUrl(String email) => '$_baseUrl/RecoverVerifyEmail/$email';
+  //static String OTPurl(String email) => '$_baseUrl/RecoverVerifyEmail/$email/123456';
 
 
 

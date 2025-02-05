@@ -4,6 +4,10 @@ import 'package:task_manager/ui/screens/verify_otp_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 
+import '../../data/services/network_caller.dart';
+import '../../data/utils/urls.dart';
+import '../widgets/snack_ber_messge.dart';
+
 class ForgotPasswordEmailScreen extends StatefulWidget {
   const ForgotPasswordEmailScreen({super.key});
 
@@ -13,6 +17,10 @@ class ForgotPasswordEmailScreen extends StatefulWidget {
   State<ForgotPasswordEmailScreen> createState() =>
       _ForgotPasswordEmailScreenState();
 }
+
+final TextEditingController _verifiedEmailController = TextEditingController();
+
+bool _getOTPInProgress = false;
 
 class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
   @override
@@ -56,12 +64,15 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
     return Column(
       children: [
         TextFormField(
+          controller: _verifiedEmailController,
           keyboardType: TextInputType.emailAddress,
           decoration: const InputDecoration(hintText: 'Email'),
         ),
         const SizedBox(height: 24),
         ElevatedButton(
-          onPressed: _onTapNextButton,
+          onPressed: () {
+            _getOTP();
+          },
           child: const Icon(Icons.arrow_circle_right_outlined),
         ),
       ],
@@ -87,13 +98,25 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
     );
   }
 
-  void _onTapNextButton() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const VerifyOTPscreen(),
-      ),
-    );
+  Future<void> _getOTP() async {
+    _getOTPInProgress = true;
+    setState(() {});
+
+    final NetworkResponse response = await NetworkCaller.getRequest(
+        url: Urls.RecoverVerifyEmailUrl(_verifiedEmailController.text));
+
+    if (response.isSuccess) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const VerifyOTPscreen(),
+        ),
+      );
+    } else {
+      showSnackBerMessage(context, response.errorMessage);
+    }
+    _getOTPInProgress = false;
+    setState(() {});
   }
 
   void _onTapSignIn() {

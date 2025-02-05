@@ -17,6 +17,9 @@ import 'package:task_manager/ui/utils/app_colors.dart';
 class TaskManagerApp extends StatelessWidget {
   const TaskManagerApp({super.key});
 
+
+  static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -58,6 +61,7 @@ class TaskManagerApp extends StatelessWidget {
           )), //light theme end here=================
 
       initialRoute: '/',
+      navigatorKey: navigatorKey,
       onGenerateRoute: (RouteSettings settings) {
         late Widget widget;
         if (settings.name == SplashScreen.name) {

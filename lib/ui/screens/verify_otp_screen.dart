@@ -5,6 +5,7 @@ import 'package:task_manager/ui/screens/set_password_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
+import 'package:task_manager/ui/widgets/snack_ber_messge.dart';
 
 class VerifyOTPscreen extends StatefulWidget {
   const VerifyOTPscreen({super.key});
@@ -68,7 +69,12 @@ class _VerifyOTPscreenState extends State<VerifyOTPscreen> {
 
                 const SizedBox(height: 24),
                 ElevatedButton(onPressed: () {
-                  Navigator.pushNamed(context, ResetPasswordScreen.name);
+                  if(_OTPEDcontroller.text=="123456"){
+                    Navigator.pushNamed(context, ResetPasswordScreen.name);
+
+                  }else{
+                    showSnackBerMessage(context, 'Input valid pin');
+                  }
 
                 }, child: Text("Verify")),
                 const SizedBox(height: 48),

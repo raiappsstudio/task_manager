@@ -23,13 +23,7 @@ class UpdateProfileScreen extends StatefulWidget {
   State<UpdateProfileScreen> createState() => _UpdateProfileScreenState();
 }
 
-
-
-
-
-
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
-
   final TextEditingController _firstNameEDcontroller = TextEditingController();
   final TextEditingController _lastNameEDcontroller = TextEditingController();
   final TextEditingController _mobileEDcontroller = TextEditingController();
@@ -39,20 +33,16 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   XFile? _pickedImage;
   bool updateInprogress = false;
 
-
   @override
   void initState() {
     super.initState();
 
-    _firstNameEDcontroller.text = AuthController.userModel?.firstName?? "";
-    _lastNameEDcontroller.text = AuthController.userModel?.lastName?? "";
-    _mobileEDcontroller.text = AuthController.userModel?.mobile?? "";
-    _emailEDcontroller.text = AuthController.userModel?.email?? "";
-
-
+    _firstNameEDcontroller.text = AuthController.userModel?.firstName ?? "";
+    _lastNameEDcontroller.text = AuthController.userModel?.lastName ?? "";
+    _mobileEDcontroller.text = AuthController.userModel?.mobile ?? "";
+    _emailEDcontroller.text = AuthController.userModel?.email ?? "";
 
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -117,7 +107,6 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   controller: _passwordEDcontroller,
                   obscureText: true,
                   decoration: InputDecoration(hintText: "Password"),
-                  
                 ),
                 const SizedBox(height: 24),
                 Visibility(
@@ -200,14 +189,12 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
       ),
     );
   }
-  
-  
-  void _onTapUpdateButton (){
-    if (_formKey.currentState!.validate()){
+
+  void _onTapUpdateButton() {
+    if (_formKey.currentState!.validate()) {
       _updateProfile();
     }
   }
-  
 
   Future<void> _pickImage() async {
     ImagePicker picker = ImagePicker();
@@ -240,25 +227,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
     }
 
     final NetworkResponse response = await NetworkCaller.postRequest(
-      url: Urls.updateProfile,
-      body: requsetBody);
+        url: Urls.updateProfile, body: requsetBody);
     updateInprogress = false;
     setState(() {});
-    if (response.isSuccess){
+    if (response.isSuccess) {
       _pickedImage = null;
       _passwordEDcontroller.clear();
       showSnackBerMessage(context, 'profile updated successfully! ');
-    }else{
+    } else {
       showSnackBerMessage(context, response.errorMessage);
-
     }
-
-
-
-
   }
-  
-  
 
   @override
   void dispose() {

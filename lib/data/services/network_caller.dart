@@ -1,7 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart';
+import 'package:task_manager/app.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
+import 'package:task_manager/ui/screens/sign_in_screen.dart';
 
 class NetworkResponse {
   final int statusCode;
@@ -32,6 +34,10 @@ class NetworkCaller {
             isSuccess: true,
             statusCode: response.statusCode,
             responseData: decodedResponse);
+      } else if (response.statusCode == 401) {
+        await _logout();
+        return NetworkResponse(
+            isSuccess: false, statusCode: response.statusCode);
       } else {
         return NetworkResponse(
             isSuccess: false, statusCode: response.statusCode);
@@ -64,6 +70,10 @@ class NetworkCaller {
             isSuccess: true,
             statusCode: response.statusCode,
             responseData: decodedResponse);
+      } else if (response.statusCode == 401) {
+        await _logout();
+        return NetworkResponse(
+            isSuccess: false, statusCode: response.statusCode);
       } else {
         return NetworkResponse(
             isSuccess: false, statusCode: response.statusCode);
@@ -75,5 +85,13 @@ class NetworkCaller {
         errorMessage: e.toString(),
       );
     }
+  }
+
+  static Future<void> _logout() async {
+    await AuthController.clearUserData();
+    Navigator.pushNamedAndRemoveUntil(
+        TaskManagerApp.navigatorKey.currentContext!,
+        SignInScreen.name,
+        (_) => false);
   }
 }
