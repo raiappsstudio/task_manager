@@ -7,6 +7,7 @@ import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/center_circular_inprogress_ber.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_ber_messge.dart';
+import 'package:get/get.dart';
 
 class SingUpScreen extends StatefulWidget {
   const SingUpScreen({super.key});
@@ -130,7 +131,8 @@ class _SingUpScreenState extends State<SingUpScreen> {
                                   const TextStyle(color: AppColors.themeColor),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.pop(context);
+                                  //Navigator.pop(context);
+                                  Get.back();
                                 },
                             )
                           ],
@@ -173,7 +175,8 @@ class _SingUpScreenState extends State<SingUpScreen> {
       if (response.isSuccess) {
         _clearTextFields();
         showSnackBerMessage(context, 'New registration successfull');
-        Navigator.pushNamed(context, SignInScreen.name);
+        //Navigator.pushNamed(context, SignInScreen.name);
+        Get.offNamed(SignInScreen.name);
       } else {
         showSnackBerMessage(context, response.errorMessage);
       }

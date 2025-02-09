@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 import 'package:task_manager/ui/screens/set_password_screen.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
@@ -70,7 +71,8 @@ class _VerifyOTPscreenState extends State<VerifyOTPscreen> {
                 const SizedBox(height: 24),
                 ElevatedButton(onPressed: () {
                   if(_OTPEDcontroller.text=="123456"){
-                    Navigator.pushNamed(context, ResetPasswordScreen.name);
+                    // Navigator.pushNamed(context, ResetPasswordScreen.name);
+                    Get.toNamed(ResetPasswordScreen.name);
 
                   }else{
                     showSnackBerMessage(context, 'Input valid pin');
@@ -94,8 +96,10 @@ class _VerifyOTPscreenState extends State<VerifyOTPscreen> {
                                   const TextStyle(color: AppColors.themeColor),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.pushNamedAndRemoveUntil(context,
-                                      SignInScreen.name, (value) => false);
+                                  // Navigator.pushNamedAndRemoveUntil(context,
+                                  //     SignInScreen.name, (value) => false);
+                                  Get.offAllNamed(SignInScreen.name);
+
                                 },
                             )
                           ],

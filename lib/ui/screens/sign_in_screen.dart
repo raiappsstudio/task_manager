@@ -11,6 +11,8 @@ import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/center_circular_inprogress_ber.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/snack_ber_messge.dart';
+import 'package:get/get.dart';
+
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -87,8 +89,11 @@ class _SignInScreenState extends State<SignInScreen> {
                     children: [
                       TextButton(
                         onPressed: () {
-                          Navigator.pushNamed(
-                              context, ForgotPasswordEmailScreen.name);
+                          // Navigator.pushNamed(
+                          //     context, ForgotPasswordEmailScreen.name);
+
+                          Get.toNamed(ForgotPasswordEmailScreen.name);
+
                         },
                         child: const Text("Forgot Password"),
                       ),
@@ -105,8 +110,11 @@ class _SignInScreenState extends State<SignInScreen> {
                                   const TextStyle(color: AppColors.themeColor),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.pushNamed(
-                                      context, SingUpScreen.name);
+                                  // Navigator.pushNamed(
+                                  //     context, SingUpScreen.name);
+
+                                  Get.toNamed(SingUpScreen.name);
+
                                 },
                             )
                           ],
@@ -149,7 +157,10 @@ class _SignInScreenState extends State<SignInScreen> {
 
 
       showSnackBerMessage(context, 'Sign In Successfull!');
-      Navigator.pushReplacementNamed(context, MainBottomNavScreen.name);
+     // Navigator.pushReplacementNamed(context, MainBottomNavScreen.name);
+      Get.offAllNamed(MainBottomNavScreen.name);
+
+
     } else {
       if (response.statusCode == 401) {
         showSnackBerMessage(context, 'email and password is wrong');

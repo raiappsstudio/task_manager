@@ -119,32 +119,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                       child: Icon(Icons.arrow_circle_right_outlined)),
                 ),
                 const SizedBox(height: 48),
-                Center(
-                  child: Column(
-                    children: [
-                      RichText(
-                        text: TextSpan(
-                          text: "You have an account?",
-                          style: const TextStyle(
-                              color: Colors.black54,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w600),
-                          children: [
-                            TextSpan(
-                              text: " Sign In",
-                              style:
-                                  const TextStyle(color: AppColors.themeColor),
-                              recognizer: TapGestureRecognizer()
-                                ..onTap = () {
-                                  Navigator.pop(context);
-                                },
-                            )
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                )
+
               ],
             ),
           ),

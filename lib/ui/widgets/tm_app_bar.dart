@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/screens/update_profile_screen.dart';
@@ -34,7 +35,9 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: GestureDetector(
               onTap: () {
                 if (!fromUpdateProfile) {
-                  Navigator.pushNamed(context, UpdateProfileScreen.name);
+                 // Navigator.pushNamed(context, UpdateProfileScreen.name);
+                  Get.toNamed(UpdateProfileScreen.name);
+
                 }
               },
               child: Column(
@@ -55,8 +58,11 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
           IconButton(
             onPressed: () async {
               await AuthController.clearUserData();
-              Navigator.pushNamedAndRemoveUntil(
-                  context, SignInScreen.name, (predicate) => false);
+              // Navigator.pushNamedAndRemoveUntil(
+              //     context, SignInScreen.name, (predicate) => false);
+
+              Get.offAllNamed(SignInScreen.name);
+
             },
             icon: Icon(Icons.logout,color: Colors.white,),
 

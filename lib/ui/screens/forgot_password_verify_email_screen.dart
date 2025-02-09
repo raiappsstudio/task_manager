@@ -7,6 +7,8 @@ import 'package:task_manager/ui/widgets/screen_background.dart';
 import '../../data/services/network_caller.dart';
 import '../../data/utils/urls.dart';
 import '../widgets/snack_ber_messge.dart';
+import 'package:get/get.dart';
+
 
 class ForgotPasswordEmailScreen extends StatefulWidget {
   const ForgotPasswordEmailScreen({super.key});
@@ -106,12 +108,16 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
         url: Urls.RecoverVerifyEmailUrl(_verifiedEmailController.text));
 
     if (response.isSuccess) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => const VerifyOTPscreen(),
-        ),
-      );
+      // Navigator.push(
+      //   context,
+      //   MaterialPageRoute(
+      //     builder: (context) => const VerifyOTPscreen(),
+      //   ),
+      // );
+
+      Get.toNamed(VerifyOTPscreen.name);
+
+
     } else {
       showSnackBerMessage(context, response.errorMessage);
     }
@@ -120,6 +126,6 @@ class _ForgotPasswordEmailScreenState extends State<ForgotPasswordEmailScreen> {
   }
 
   void _onTapSignIn() {
-    Navigator.pop(context);
+    Get.back();
   }
 }
