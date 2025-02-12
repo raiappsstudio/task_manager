@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:task_manager/data/models/task_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
+import 'package:task_manager/ui/controllers/new_task_controller.dart';
 import 'package:task_manager/ui/widgets/snack_ber_messge.dart';
 
 class TaskItemWidget extends StatelessWidget {
@@ -31,8 +32,10 @@ class TaskItemWidget extends StatelessWidget {
                   padding:
                       const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      color: _getStatusColor(taskModel.status ?? "",),
+                    borderRadius: BorderRadius.circular(16),
+                    color: _getStatusColor(
+                      taskModel.status ?? "",
+                    ),
                   ),
                   child: Text(
                     taskModel.status ?? "",
@@ -46,7 +49,6 @@ class TaskItemWidget extends StatelessWidget {
                     IconButton(
                       onPressed: () {
                         MyalerDialog(context);
-
                       },
                       icon: const Icon(Icons.delete),
                     ),
@@ -64,27 +66,18 @@ class TaskItemWidget extends StatelessWidget {
         ),
       ),
     );
-
-
   }
-
-
 
   Future<void> _deleteTask(context) async {
     final NetworkResponse response = await NetworkCaller.getRequest(
         url: Urls.deletedTaskUrl('${taskModel.sId}'));
 
     if (response.isSuccess) {
-
       showSnackBerMessage(context, 'Delete Successfully!');
     } else {
-
       showSnackBerMessage(context, 'Delete Fail!');
-
     }
   }
-
-
 
   MyalerDialog(context) {
     return showDialog(
@@ -111,27 +104,19 @@ class TaskItemWidget extends StatelessWidget {
         });
   }
 
-
-
-
-  UpdateStatus(context) {
-
-    return showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return Expanded(
-              child: AlertDialog(
-            title: Text('Change Status!'),
-
-
-
-          ));
-        });
-
-
-
-  } //Alart dialog end here================
-
+  // UpdateStatus(context) {
+  //   return showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return Expanded(
+  //             child: AlertDialog(
+  //           title: Text('Change Status!'),
+  //
+  //
+  //
+  //         ));
+  //       });
+  // } //Alart dialog end here================
 
   Color _getStatusColor(String status) {
     if (status == 'New') {
@@ -145,6 +130,70 @@ class TaskItemWidget extends StatelessWidget {
     }
   }
 
+  void UpdateStatus(context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Change Status"),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  title: Text('New'),
+                  onTap: () {
+                    _updateTaskStatus(context, "New");
+                    Navigator.pop(context);
+                  },
+                ),
+                Divider(
+                  height: 0,
+                ),
+                ListTile(
+                  title: Text('Progress'),
+                  onTap: () {
+                    _updateTaskStatus(context, "Progress");
+                    Navigator.pop(context);
+                  },
+                ),
+                Divider(
+                  height: 0,
+                ),
+                ListTile(
+                  title: Text('Completed'),
+                  onTap: () {
+                    _updateTaskStatus(context, "Completed");
+                    Navigator.pop(context);
+                  },
+                ),
+                Divider(
+                  height: 0,
+                ),
+                ListTile(
+                  title: Text('Cancel'),
+                  onTap: () {
+                    _updateTaskStatus(context, "Cancel");
+                    Navigator.pop(context);
+                  },
+                ),
+              ],
+            ),
+          );
+        });
+  }
+
+
+  Future<void> _updateTaskStatus(BuildContext context, String status) async {
+    final NetworkResponse response = await NetworkCaller.getRequest(
+      url: Urls.updateTaskStatusUrl("${taskModel.sId}",status),
+    );
+
+    if (response.isSuccess) {
+      showSnackBerMessage(context, 'Update Successfully!');
+    } else {
+      showSnackBerMessage(context, 'Update Fail!');
+    }
+  }
 
 
 

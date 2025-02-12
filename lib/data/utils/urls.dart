@@ -8,6 +8,7 @@
   static const String taskCountByStatusUrl = '$_baseUrl/taskStatusCount';
   static String listTaskListUrl(String status) => '$_baseUrl/listTaskByStatus/$status';
   static String deletedTaskUrl(String id) => '$_baseUrl/deleteTask/$id';
+  static String updateTaskStatusUrl(String id, String status) => '$_baseUrl/updateTaskStatus/$id/$status';
 
   static const String updateProfile = '$_baseUrl/profileUpdate';
   static String RecoverVerifyEmailUrl(String email) => '$_baseUrl/RecoverVerifyEmail/$email';

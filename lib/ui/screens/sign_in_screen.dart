@@ -1,9 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:task_manager/data/models/user_model.dart';
-import 'package:task_manager/data/services/network_caller.dart';
-import 'package:task_manager/data/utils/urls.dart';
-import 'package:task_manager/ui/controllers/auth_controller.dart';
+import 'package:task_manager/ui/controllers/sign_in_controller.dart';
 import 'package:task_manager/ui/screens/forgot_password_verify_email_screen.dart';
 import 'package:task_manager/ui/screens/main_bottom_nav_screen.dart';
 import 'package:task_manager/ui/screens/sign_up_screen.dart';
@@ -27,7 +24,8 @@ class _SignInScreenState extends State<SignInScreen> {
   final TextEditingController _emailEDcontroller = TextEditingController();
   final TextEditingController _passwordEDcontroller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
-  bool _signInprogress = false;
+
+  final SignInController _singInController = Get.find<SignInController>();
 
   @override
   Widget build(BuildContext context) {
@@ -73,15 +71,19 @@ class _SignInScreenState extends State<SignInScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                Visibility(
-                  visible: _signInprogress == false,
-                  replacement: CenterCirculerInprogressBer(),
-                  child: ElevatedButton(
-                      onPressed: () {
+                GetBuilder<SignInController>(
+                  builder: (context) {
+                    return Visibility(
+                      visible: _singInController.inProgress == false,
+                      replacement: CenterCirculerInprogressBer(),
+                      child: ElevatedButton(
+                          onPressed: () {
 
-                        _onTapSignIn();
-                      },
-                      child: Icon(Icons.arrow_circle_right_outlined)),
+                            _onTapSignIn();
+                          },
+                          child: Icon(Icons.arrow_circle_right_outlined)),
+                    );
+                  }
                 ),
                 const SizedBox(height: 48),
                 Center(
@@ -133,42 +135,22 @@ class _SignInScreenState extends State<SignInScreen> {
 
   void _onTapSignIn() {
     if (_formKey.currentState!.validate()) {
-      _signInprogress = true;
-      setState(() {});
       _signInUser();
     }
   }
 
+
   Future<void> _signInUser() async {
-    Map<String, dynamic> requestbody = {
-      "email": _emailEDcontroller.text.trim(),
-      "password": _passwordEDcontroller.text,
-    };
+    final bool isSuccess = await _singInController.signIn(
+        _emailEDcontroller.text.trim(), _passwordEDcontroller.text);
 
-    final NetworkResponse response =
-        await NetworkCaller.postRequest(url: Urls.signInUrl, body: requestbody);
-    _signInprogress = false;
-    setState(() {});
-
-    if (response.isSuccess) {
-      String token = response.responseData!['token'];
-      UserModel userModel =UserModel.fromJson(response.responseData!['data']);
-      await AuthController.saveUserData(token, userModel);
-
-
-      showSnackBerMessage(context, 'Sign In Successfull!');
-     // Navigator.pushReplacementNamed(context, MainBottomNavScreen.name);
+    if (isSuccess) {
       Get.offAllNamed(MainBottomNavScreen.name);
-
-
     } else {
-      if (response.statusCode == 401) {
-        showSnackBerMessage(context, 'email and password is wrong');
-      } else {
-        showSnackBerMessage(context, response.errorMessage);
-      }
+      showSnackBerMessage(context, _singInController.errorMassage!);
     }
   }
+
 
   @override
   void dispose() {

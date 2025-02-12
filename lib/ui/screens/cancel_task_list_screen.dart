@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:task_manager/data/models/task_model.dart';
+import 'package:task_manager/ui/controllers/cancel_task_controller.dart';
 import 'package:task_manager/ui/widgets/center_circular_inprogress_ber.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
 import 'package:task_manager/ui/widgets/task_item_widget.dart';
 import '../../data/models/task_list_by_status_model.dart';
-import '../../data/services/network_caller.dart';
-import '../../data/utils/urls.dart';
 import '../widgets/snack_ber_messge.dart';
 import '../widgets/tm_app_bar.dart';
 
@@ -18,8 +19,9 @@ class CancelTaskListScreen extends StatefulWidget {
 }
 
 class _CancelTaskListScreenState extends State<CancelTaskListScreen> {
-  bool _progressTaskInprogresber = false;
   TaskListbyStatusModel? cacelTaskListbyStatusModel;
+
+  final CancelTaskController _cancelTaskController = Get.find<CancelTaskController>();
 
 @override
   void initState() {
@@ -39,40 +41,37 @@ class _CancelTaskListScreenState extends State<CancelTaskListScreen> {
           child: ScreenBackground(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: _builTaskListView(),
+              child: _builTaskListView(_cancelTaskController.tasklist),
             ),
           ),
         ));
   }
 
-  Widget _builTaskListView() {
-    return Visibility(
-      visible: _progressTaskInprogresber==false,
-      replacement: CenterCirculerInprogressBer(),
-      child: ListView.builder(
-        itemCount: cacelTaskListbyStatusModel?.taskList?.length ?? 0,
-        itemBuilder: (context, index) {
-          return TaskItemWidget( taskModel: cacelTaskListbyStatusModel!.taskList![index],);
-        },
-      ),
+  Widget _builTaskListView(List<TaskModel> taskList) {
+    return GetBuilder<CancelTaskController>(
+      builder: (context) {
+        return Visibility(
+          visible: _cancelTaskController.inProgress==false,
+          replacement: CenterCirculerInprogressBer(),
+          child: ListView.builder(
+            itemCount: taskList.length,
+            itemBuilder: (context, index) {
+              return TaskItemWidget( taskModel: taskList[index]);
+            },
+          ),
+        );
+      }
     );
   }
 
   Future<void> _getCancelTaskList() async {
-    _progressTaskInprogresber = true;
-    setState(() {});
+  final bool isSuccess = await _cancelTaskController.getCancelTasklist();
 
-    final NetworkResponse response =
-    await NetworkCaller.getRequest(url: Urls.listTaskListUrl('Cancel'));
-
-    if (response.isSuccess) {
-      cacelTaskListbyStatusModel =
-          TaskListbyStatusModel.fromJson(response.responseData!);
+    if (!isSuccess) {
+      showSnackBerMessage(context, _cancelTaskController.errorMassage!);
     } else {
-      showSnackBerMessage(context, response.errorMessage);
     }
-    _progressTaskInprogresber = false;
-    setState(() {});
+
   }
 
 

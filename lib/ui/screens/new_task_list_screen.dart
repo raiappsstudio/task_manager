@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:task_manager/data/models/task-count-by-status.dart';
 import 'package:task_manager/data/models/task_count-model.dart';
 import 'package:task_manager/data/models/task_list_by_status_model.dart';
+import 'package:task_manager/data/models/task_model.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
+import 'package:task_manager/ui/controllers/new_task_controller.dart';
 import 'package:task_manager/ui/screens/add_new_task_screen.dart';
 import 'package:task_manager/ui/widgets/center_circular_inprogress_ber.dart';
 import 'package:task_manager/ui/widgets/screen_background.dart';
@@ -11,7 +14,6 @@ import 'package:task_manager/ui/widgets/snack_ber_messge.dart';
 import 'package:task_manager/ui/widgets/task_item_widget.dart';
 import '../widgets/task_status_summary_counter_widget.dart';
 import '../widgets/tm_app_bar.dart';
-
 
 class NewTaskListScreen extends StatefulWidget {
   const NewTaskListScreen({super.key});
@@ -24,9 +26,10 @@ class NewTaskListScreen extends StatefulWidget {
 
 class _NewTaskListScreenState extends State<NewTaskListScreen> {
   bool _getTaskCountbyStatusInprogress = false;
-  bool _getNewTaskInprogress = false;
   TaskCountByStatusModel? taskCountByStatusModel;
   TaskListbyStatusModel? newTaskListbyStatusModel;
+
+  final NewTaskController _newTaskController = Get.find<NewTaskController>();
 
   @override
   void initState() {
@@ -47,35 +50,41 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
           child: const Icon(Icons.add),
         ),
         body: RefreshIndicator(
-          onRefresh: ()async {
-              _getTaskCountByStatus();
-              _getNewTaskList();
+          onRefresh: () async {
+            _getTaskCountByStatus();
+            _getNewTaskList();
           },
           child: ScreenBackground(
             child: SingleChildScrollView(
               child: Column(
-                children: [_taskSummaryStatusWidget(), _builTaskListView()],
+                children: [
+                  _taskSummaryStatusWidget(),
+                  _builTaskListView(_newTaskController.tasklist)],
               ),
             ),
           ),
         ));
   }
 
-  Widget _builTaskListView() {
+
+
+  Widget _builTaskListView(List<TaskModel> taskList) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: Visibility(
-        visible: _getNewTaskInprogress ==false,
-        replacement: CenterCirculerInprogressBer(),
-        child: ListView.builder(
-          shrinkWrap: true,
-          primary: false,
-          itemCount: newTaskListbyStatusModel?.taskList?.length?? 0,
-          itemBuilder: (context, index) {
-            return  TaskItemWidget(taskModel: newTaskListbyStatusModel!.taskList![index]);
-          },
-        ),
-      ),
+      child: GetBuilder<NewTaskController>(builder: (controller) {
+        return Visibility(
+          visible: controller.inProgress == false,
+          replacement: CenterCirculerInprogressBer(),
+          child: ListView.builder(
+            shrinkWrap: true,
+            primary: false,
+            itemCount: taskList.length,
+            itemBuilder: (context, index) {
+              return TaskItemWidget(taskModel: taskList[index]);
+            },
+          ),
+        );
+      }),
     );
   }
 
@@ -92,7 +101,8 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
                 scrollDirection: Axis.horizontal,
                 primary: false,
                 shrinkWrap: true,
-                itemCount: taskCountByStatusModel?.taskByStatusList?.length ?? 0,
+                itemCount:
+                    taskCountByStatusModel?.taskByStatusList?.length ?? 0,
                 itemBuilder: (context, index) {
                   final TaskCountModel model =
                       taskCountByStatusModel!.taskByStatusList![index];
@@ -108,22 +118,12 @@ class _NewTaskListScreenState extends State<NewTaskListScreen> {
   }
 
   Future<void> _getNewTaskList() async {
-    _getNewTaskInprogress = true;
-    setState(() {});
+    final bool isSuccess = await _newTaskController.getNewTasklist();
 
-    final NetworkResponse response =
-        await NetworkCaller.getRequest(url: Urls.listTaskListUrl('New'));
-
-    if (response.isSuccess) {
-      newTaskListbyStatusModel =
-          TaskListbyStatusModel.fromJson(response.responseData!);
-    } else {
-      showSnackBerMessage(context, response.errorMessage);
-    }
-    _getNewTaskInprogress = false;
-    setState(() {});
+    if (!isSuccess) {
+      showSnackBerMessage(context, _newTaskController.errorMassage!);
+    } else {}
   }
-
 
   Future<void> _getTaskCountByStatus() async {
     _getTaskCountbyStatusInprogress = true;
