@@ -11,6 +11,8 @@ class TMAppBar extends StatelessWidget implements PreferredSizeWidget {
   const TMAppBar({
     super.key,
     this.fromUpdateProfile = false,
+
+
   });
 
   final bool fromUpdateProfile;

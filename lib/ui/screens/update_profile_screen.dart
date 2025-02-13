@@ -3,10 +3,12 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
 import 'package:task_manager/ui/controllers/auth_controller.dart';
+import 'package:task_manager/ui/controllers/update_profile_controller.dart';
 import 'package:task_manager/ui/widgets/center_circular_inprogress_ber.dart';
 import 'package:task_manager/ui/widgets/snack_ber_messge.dart';
 import 'package:task_manager/ui/widgets/tm_app_bar.dart';
@@ -31,7 +33,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final TextEditingController _passwordEDcontroller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
   XFile? _pickedImage;
-  bool updateInprogress = false;
+  final UpdateProfileController _updateProfileController = Get.find<UpdateProfileController>();
 
   @override
   void initState() {
@@ -109,14 +111,17 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
                   decoration: InputDecoration(hintText: "Password"),
                 ),
                 const SizedBox(height: 24),
-                Visibility(
-                  visible: updateInprogress == false,
-                  replacement: CenterCirculerInprogressBer(),
-                  child: ElevatedButton(
-                      onPressed: () {
-                        _updateProfile();
-                      },
-                      child: Icon(Icons.arrow_circle_right_outlined)),
+                GetBuilder<UpdateProfileController>(
+                  builder: (context) {
+                    return Visibility(
+                      visible: _updateProfileController.inProgress == false,
+                      replacement: CenterCirculerInprogressBer(),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            _onTapUpdateButton();                          },
+                          child: Icon(Icons.arrow_circle_right_outlined)),
+                    );
+                  }
                 ),
                 const SizedBox(height: 48),
 
@@ -168,6 +173,7 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   void _onTapUpdateButton() {
     if (_formKey.currentState!.validate()) {
       _updateProfile();
+      TMAppBar();
     }
   }
 
@@ -182,36 +188,22 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   }
 
   Future<void> _updateProfile() async {
-    updateInprogress = true;
-    setState(() {});
+    final bool isSuccess = await _updateProfileController.UpdateProfile(
+        _emailEDcontroller.text.trim(),
+        _firstNameEDcontroller.text.trim(),
+        _lastNameEDcontroller.text.trim(),
+        _mobileEDcontroller.text.trim(),
+        _passwordEDcontroller.text,
+        _pickedImage // Pass the image here instead of password again
+    );
 
-    Map<String, dynamic> requsetBody = {
-      "email": _emailEDcontroller.text.trim(),
-      "firstName": _firstNameEDcontroller.text.trim(),
-      "lastName": _lastNameEDcontroller.text.trim(),
-      "mobile": _mobileEDcontroller.text.trim(),
-    };
 
-    if (_pickedImage != null) {
-      List<int> imageBytes = await _pickedImage!.readAsBytes();
-      requsetBody['photo'] = base64Encode(imageBytes);
+
+
+    if (!isSuccess) {
+      showSnackBerMessage(context, _updateProfileController.errorMassage!);
     }
 
-    if (_passwordEDcontroller.text.isNotEmpty) {
-      requsetBody['password'] = _passwordEDcontroller.text;
-    }
-
-    final NetworkResponse response = await NetworkCaller.postRequest(
-        url: Urls.updateProfile, body: requsetBody);
-    updateInprogress = false;
-    setState(() {});
-    if (response.isSuccess) {
-      _pickedImage = null;
-      _passwordEDcontroller.clear();
-      showSnackBerMessage(context, 'profile updated successfully! ');
-    } else {
-      showSnackBerMessage(context, response.errorMessage);
-    }
   }
 
   @override

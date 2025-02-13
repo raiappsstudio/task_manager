@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:task_manager/data/services/network_caller.dart';
 import 'package:task_manager/data/utils/urls.dart';
+import 'package:task_manager/ui/controllers/signup_controller.dart';
 import 'package:task_manager/ui/screens/sign_in_screen.dart';
 import 'package:task_manager/ui/utils/app_colors.dart';
 import 'package:task_manager/ui/widgets/center_circular_inprogress_ber.dart';
@@ -26,6 +27,7 @@ class _SingUpScreenState extends State<SingUpScreen> {
   final TextEditingController _passwordEDcontroller = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey();
   bool _signupInprogress = false;
+  final SignupController _signupController = Get.find<SignupController>();
 
   @override
   Widget build(BuildContext context) {
@@ -104,14 +106,18 @@ class _SingUpScreenState extends State<SingUpScreen> {
                   },
                 ),
                 const SizedBox(height: 24),
-                Visibility(
-                  visible: _signupInprogress == false,
-                  replacement: CenterCirculerInprogressBer(),
-                  child: ElevatedButton(
-                      onPressed: () {
-                        _onTapSignUpButton();
-                      },
-                      child: Icon(Icons.arrow_circle_right_outlined)),
+                GetBuilder(
+                  builder: (context) {
+                    return Visibility(
+                      visible: _signupController.inProgress == false,
+                      replacement: CenterCirculerInprogressBer(),
+                      child: ElevatedButton(
+                          onPressed: () {
+                            _onTapSignUpButton();
+                          },
+                          child: Icon(Icons.arrow_circle_right_outlined)),
+                    );
+                  }
                 ),
                 const SizedBox(height: 48),
                 Center(
@@ -156,30 +162,22 @@ class _SingUpScreenState extends State<SingUpScreen> {
   }
 
   Future<void> _registerUser() async {
-      _signupInprogress = true;
-      setState(() {});
+    final bool isSuccess = await _signupController.SignUp(
+      _emailEDcontroller.text.trim(),
+      _firstNameEDcontroller.text.trim(),
+      _lastNameEDcontroller.text.trim(),
+      _mobileEDcontroller.text.trim(),
+      _passwordEDcontroller.text,
+    );
 
-      Map<String, dynamic> requestbody = {
-        "email": _emailEDcontroller.text.trim(),
-        "firstName": _firstNameEDcontroller.text.trim(),
-        "lastName": _lastNameEDcontroller.text.trim(),
-        "mobile": _mobileEDcontroller.text.trim(),
-        "password": _passwordEDcontroller.text,
-        "photo": ""
-      };
+    if (!isSuccess) {
+      showSnackBerMessage(context, _signupController.errorMassage!);
+    }else{
+      showSnackBerMessage(context, 'SignUp Successfully!!');
+      Get.offNamed(SignInScreen.name);
+      _clearTextFields();
+    }
 
-      final NetworkResponse response = await NetworkCaller.postRequest(
-          url: Urls.registationUrl, body: requestbody);
-      _signupInprogress = false;
-      setState(() {});
-      if (response.isSuccess) {
-        _clearTextFields();
-        showSnackBerMessage(context, 'New registration successfull');
-        //Navigator.pushNamed(context, SignInScreen.name);
-        Get.offNamed(SignInScreen.name);
-      } else {
-        showSnackBerMessage(context, response.errorMessage);
-      }
 
   }
 
